@@ -1,0 +1,258 @@
+<html lang="zh-CN">
+ <head> 
+  <meta charset="utf-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <title>♥YYX和JMY的纪念日♥</title> 
+  <link rel="shortcut icon" href="favicon.ico"> 
+  <!-- 引入3款爱人专属字体：温柔手写/甜蜜楷体/浪漫圆润 --> 
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&amp;family=Noto+Serif+SC:wght@400;500&amp;family=ZCOOL+XiaoWei&amp;display=swap" rel="stylesheet"> 
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+            background: url(https://img1.baidu.com/it/u=2892292623,3829332193&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=1422) no-repeat center center;
+            background-size: cover;
+        }
+        .anniversary-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            color: #c70012; /* 暖红，贴合爱人氛围 */
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.75); /* 稍高透白，文字更柔和 */
+            border-radius: 20px;
+            padding: 20px 15px;
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.4); /* 粉影更柔 */
+        }
+        /* 标题：浪漫圆润字体，贴合爱心氛围 */
+        .title {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        /* 说明文字：轻楷体，温柔不突兀 */
+        .desc {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 22px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        /* 时间数字：重点调整！温柔手写体，爱人专属氛围感 */
+        .time-count {
+            font-family: 'Ma Shan Zheng', cursive; /* 手写体，比原字体更甜蜜 */
+            font-size: 48px;
+            margin: 15px 0;
+            line-height: 1.2;
+            letter-spacing: 2px; /* 字间距，手写体更舒展 */
+        }
+        /* 文案：核心调整！缩小字体+甜蜜楷体，贴合爱人细语 */
+        .wish {
+            font-family: 'Noto Serif SC', serif; /* 楷体，温柔细腻 */
+            font-size: 20px; /* 比原22px缩小，更精致 */
+            margin-top: 10px;
+            letter-spacing: 2px; /* 小字间距更舒服 */
+            line-height: 1.9; /* 行高，多句不拥挤 */
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+        /* 手机端精准适配，小屏依旧温柔 */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 28px;
+            }
+            .desc {
+                font-size: 18px;
+            }
+            .time-count {
+                font-size: 36px;
+                letter-spacing: 1px;
+            }
+            .wish {
+                font-size: 16px; /* 手机端文案再缩小，适配屏幕 */
+                letter-spacing: 1px;
+                line-height: 1.8;
+            }
+        }
+        @media (max-width: 420px) {
+            .anniversary-box {
+                width: 95%;
+                padding: 15px 10px;
+            }
+            .time-count {
+                font-size: 32px;
+            }
+        }
+    </style> 
+  <script src="js/jq.js"></script> 
+ </head> 
+ <body id="v1"> 
+  <div id="v2" class="anniversary-box"> 
+   <div id="v3" class="title">
+     ❤宝宝❤ 
+   </div> 
+   <div id="v4" class="desc">
+     我们已经认识： 
+   </div> 
+   <div class="time-count" id="timeCount">
+    28天15小时56分28秒
+   </div> 
+   <div id="v5" class="desc">
+     往后余生： 
+   </div> 
+   <div class="wish" id="randomWish">
+    愿有人陪你颠沛流离
+    <br>愿你历尽千帆，归来仍是少年
+    <br>愿你遍历山河，觉得人间值得
+    <br>愿我们岁岁年年，不离不弃
+    <br>愿余生鲜衣怒马，陪你看遍烈焰繁花
+    <br>愿所有美好，都与你如期而至
+   </div> 
+  </div> 
+  <canvas id="heartCanvas" width="360" height="686"></canvas> 
+  <script>
+        // 画布红心动效：小尺寸+多数量+慢速度+粉心，贴合爱人氛围
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        let ww = window.innerWidth, wh = window.innerHeight;
+        let hearts = [];
+        const precision = 100;
+        function resizeCanvas() {
+            ww = canvas.width = window.innerWidth;
+            wh = canvas.height = window.innerHeight;
+            ctx.strokeStyle = "#ff69b4"; // 柔粉心，贴合爱人画面
+            ctx.shadowColor = "hsla(330, 100%, 70%, 0.6)";
+        }
+        class Heart {
+            constructor(x, y) {
+                this.x = x || Math.random() * ww;
+                this.y = y || Math.random() * wh;
+                this.size = Math.random() * 1 + 0.5; // 小爱心，精致不突兀
+                this.speedX = (Math.random() - 0.4) * 4; // 慢飘
+                this.speedY = (Math.random() - 0.4) * 4;
+                this.speedSize = Math.random() * 0.02 + 0.005; // 慢消失
+                this.vertices = [];
+                for (let i = 0; i < precision; i++) {
+                    const step = (i / precision - 0.5) * Math.PI * 2;
+                    this.vertices.push({
+                        x: 15 * Math.pow(Math.sin(step), 3),
+                        y: -(13 * Math.cos(step) - 5 * Math.cos(2 * step) - 2 * Math.cos(3 * step) - Math.cos(4 * step))
+                    });
+                }
+            }
+            draw() {
+                this.size -= this.speedSize;
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size <= 0) return false;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.scale(this.size, this.size);
+                ctx.beginPath();
+                this.vertices.forEach(v => ctx.lineTo(v.x, v.y));
+                ctx.globalAlpha = this.size * 2; // 小爱心更灵动
+                ctx.shadowBlur = (3 - this.size) * 8;
+                ctx.globalCompositeOperation = "screen";
+                ctx.fillStyle = "#ff69b4";
+                ctx.fill();
+                ctx.restore();
+                return true;
+            }
+        }
+        function render() {
+            requestAnimationFrame(render);
+            ctx.clearRect(0, 0, ww, wh);
+            if (Math.random() > 0.75) hearts.push(new Heart()); // 多爱心
+            hearts.forEach(heart => heart.draw());
+            hearts = hearts.filter(heart => heart.size > 0);
+        }
+        function createHeartByMove(e) {
+            const x = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            const y = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+            hearts.push(new Heart(x, y));
+            hearts.push(new Heart(x, y));
+            hearts.push(new Heart(x, y)); // 触摸生成3个，互动感拉满
+        }
+
+        // 实时时间计数，手写体显示更甜蜜
+        const timeCount = document.getElementById('timeCount');
+        // 替换为你们的纪念日 → 格式：年-月-日 时:分:秒
+        const anniversaryTime = new Date('2026-02-01 00:00:00').getTime();
+        function updateTime() {
+            const now = new Date().getTime();
+            const diff = (now - anniversaryTime) / 1000;
+            const day = Math.floor(diff / 86400);
+            const hour = Math.floor((diff % 86400) / 3600);
+            const minute = Math.floor((diff % 3600) / 60);
+            const second = Math.floor(diff % 60);
+            timeCount.innerHTML = `${day}天${hour}小时${minute}分${second}秒`;
+        }
+
+        // 联网5-6句长文案 + 本地兜底，楷体显示更温柔
+        const randomWish = document.getElementById('randomWish');
+        const apiList = [
+            'https://api.uomg.com/api/qinghua.long?format=json',
+            'https://api.vvhan.com/api/love.long?format=json'
+        ];
+        const backupWordGroup = [
+            "山野万里，你是我藏在微风里的喜欢<br>朝朝暮暮，岁岁年年<br>心之所向，皆是你<br>双向奔赴，岁岁年年<br>世界一般，但你超值<br>有幸相遇，恰好合拍",
+            "你是我明目张胆的偏爱<br>也是我藏在心底的温柔<br>余生漫漫，幸而有你<br>初见是你，余生也是你<br>四季轮回，爱你如初<br>平安喜乐，岁岁有你",
+            "山水万程，皆有好运，皆有你<br>满心欢喜，共赴朝夕<br>以爱为名，共度余生<br>温温柔柔，岁岁年年<br>三生有幸，与你相伴<br>往后余生，皆是你",
+            "星河滚烫，你是人间理想<br>皓月清凉，你是人间曙光<br>人海冷漠，你是人间炽热<br>万事浮沉，你是人间归途<br>众生平庸，你是人间星光<br>世间无常，你是人间琳琅",
+            "愿有人陪你颠沛流离<br>愿你历尽千帆，归来仍是少年<br>愿你遍历山河，觉得人间值得<br>愿我们岁岁年年，不离不弃<br>愿余生鲜衣怒马，陪你看遍烈焰繁花<br>愿所有美好，都与你如期而至"
+        ];
+        let lastIndex = -1;
+        function getRandomIndex(arr) {
+            let index = lastIndex;
+            while (index === lastIndex) {
+                index = Math.floor(Math.random() * arr.length);
+            }
+            lastIndex = index;
+            return index;
+        }
+        async function getNetLoveWord() {
+            try {
+                const api = apiList[getRandomIndex(apiList)];
+                const res = await fetch(api);
+                const data = await res.json();
+                let content = data.content || data.text;
+                const contentArr = content.split(/\n|<br>/).filter(item => item);
+                if (contentArr.length < 5) {
+                    const supplement = ["余生有你，皆是欢喜", "风雨同舟，一路相伴", "满心欢喜，只为你"];
+                    content = [...contentArr, ...supplement].slice(0, 6).join('<br>');
+                } else {
+                    content = contentArr.slice(0, 6).join('<br>');
+                }
+                randomWish.innerHTML = content;
+            } catch (err) {
+                randomWish.innerHTML = backupWordGroup[getRandomIndex(backupWordGroup)];
+            }
+        }
+
+        // 初始化执行
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', createHeartByMove);
+        window.addEventListener('touchmove', createHeartByMove, { passive: true });
+        render();
+        updateTime();
+        getNetLoveWord();
+        setInterval(updateTime, 1000);
+        setInterval(getNetLoveWord, 2500);
+    </script>  
+ </body>
+</html>
